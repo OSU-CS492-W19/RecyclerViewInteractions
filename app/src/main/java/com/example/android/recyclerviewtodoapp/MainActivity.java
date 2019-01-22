@@ -2,6 +2,7 @@ package com.example.android.recyclerviewtodoapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -29,12 +30,15 @@ public class MainActivity extends AppCompatActivity {
         mTodoAdapter = new TodoAdapter();
         mTodoListRV.setAdapter(mTodoAdapter);
 
+        mTodoListRV.setItemAnimator(new DefaultItemAnimator());
+
         Button addTodoButton = findViewById(R.id.btn_add_todo);
         addTodoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String todoText = mTodoEntryET.getText().toString();
                 if (!TextUtils.isEmpty(todoText)) {
+                    mTodoListRV.scrollToPosition(0);
                     mTodoAdapter.addTodo(todoText);
                     mTodoEntryET.setText("");
                 }

@@ -18,7 +18,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
     public void addTodo(String todo) {
         mTodoList.add(todo);
-        notifyDataSetChanged();
+        notifyItemInserted(0);
     }
 
     @Override
