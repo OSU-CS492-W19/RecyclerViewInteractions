@@ -5,15 +5,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
     private ArrayList<String> mTodoList;
+    private OnTodoCheckedChangeListener mCheckedChangeListener;
 
-    public TodoAdapter() {
+    public interface OnTodoCheckedChangeListener {
+        void onTodoCheckedChanged(String todo, boolean b);
+    }
+
+    public TodoAdapter(OnTodoCheckedChangeListener checkedChangeListener) {
         mTodoList = new ArrayList<>();
+        mCheckedChangeListener = checkedChangeListener;
     }
 
     public void addTodo(String todo) {
@@ -36,20 +44,39 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder todoViewHolder, int i) {
-        String todo = mTodoList.get(mTodoList.size() - i - 1);
+        String todo = mTodoList.get(adapterPositionToArrayIndex(i));
         todoViewHolder.bind(todo);
+    }
+
+    public int adapterPositionToArrayIndex(int i) {
+        return mTodoList.size() - i - 1;
     }
 
     class TodoViewHolder extends RecyclerView.ViewHolder {
         private TextView mTodoTV;
 
-        public TodoViewHolder(View itemView) {
+        public TodoViewHolder(final View itemView) {
             super(itemView);
             mTodoTV = itemView.findViewById(R.id.tv_todo_text);
+
+            CheckBox checkBox = itemView.findViewById(R.id.todo_checkbox);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    String todo = mTodoList.get(adapterPositionToArrayIndex(getAdapterPosition()));
+                    mCheckedChangeListener.onTodoCheckedChanged(todo, b);
+                }
+            });
         }
 
         public void bind(String todo) {
             mTodoTV.setText(todo);
+        }
+
+        public void removeFromList() {
+            int position = getAdapterPosition();
+            mTodoList.remove(adapterPositionToArrayIndex(position));
+            notifyItemRemoved(position);
         }
     }
 }

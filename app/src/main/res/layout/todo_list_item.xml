@@ -7,6 +7,7 @@
     android:padding="16dp">
 
     <CheckBox
+        android:id="@+id/todo_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
